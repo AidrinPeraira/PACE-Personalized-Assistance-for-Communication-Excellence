@@ -4,11 +4,16 @@ import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js'
 import connectDB from './config/db.js'
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 
 const app = express();
 dotenv.config();
-
+app.use(cors({
+  origin: "*", // allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
