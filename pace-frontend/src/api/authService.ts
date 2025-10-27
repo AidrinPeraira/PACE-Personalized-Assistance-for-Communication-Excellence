@@ -1,8 +1,14 @@
-import axios from "axios"
-import type { LoginPayload, RegisterPayload } from "@/Features/auth/authTypes"
+import axios from "axios";
+import type { LoginPayload, RegisterPayload } from "@/Features/auth/authTypes";
+import { API } from '@/api/api'
 
 
-const API_URL = 'http://localhost:3000/api'
 
-export const login = (data: LoginPayload) => axios.post(`${API_URL}/user/login`, data)
-export const register = (data: RegisterPayload) => axios.post(`${API_URL}/user/register`,data)
+export const login = (data: LoginPayload) =>
+    axios.post(`${API}/user/login`, data, { withCredentials: true });
+
+export const register = (data: RegisterPayload) =>
+    axios.post(`${API}/user/register`, data, { withCredentials: true });
+
+export const logout = () =>
+    axios.post(`${API}/user/logout`, {}, { withCredentials: true });

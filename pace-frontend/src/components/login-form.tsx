@@ -34,8 +34,7 @@ export function LoginForm({
     console.log("working");
     
     e.preventDefault()
-    console.log(email, "this is the data we get form the form ");
-    console.log(password,"password")
+
     dispatch(loginUser({email,password}))
 
     

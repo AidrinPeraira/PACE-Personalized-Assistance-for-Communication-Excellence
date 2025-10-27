@@ -10,9 +10,9 @@ import cors from 'cors';
 const app = express();
 dotenv.config();
 app.use(cors({
-  origin: "*", // allow all origins
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+    origin: process.env.FRONTEND_BASE_URL, // <-- MUST match your React app's URL
+    credentials: true,                // <-- CRITICAL: This allows cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"] // Optional, but good to keep
 }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
