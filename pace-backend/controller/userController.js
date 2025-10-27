@@ -20,9 +20,10 @@ const userRegister = asyncHandler(async (req, res) => {
     if (!passwordRegex.test(password)) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "Invalid Password Format" });
     }
-    if (!batchRegex.test(batch)) {
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "Invalid Batch" });
-    }
+    // if (!batchRegex.test(batch)) {
+    //     return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "Invalid Batch" });
+    // }
+
 
     const userExist = await User.findOne({ email })
 
@@ -39,8 +40,14 @@ const userRegister = asyncHandler(async (req, res) => {
     });
 
     await newUser.save();
+''
+    res.status(HTTP_STATUS.CREATED).json({user : {
+        username : newUser.username,
+        email :newUser.email,
+        batch : newUser.batch,
+        role : newUser.role
 
-    res.status(HTTP_STATUS.CREATED).json({ message: "Registeration Success wait for the Approval" });
+    }, message: "Registeration Success wait for the Approval" });
 
 });
 
