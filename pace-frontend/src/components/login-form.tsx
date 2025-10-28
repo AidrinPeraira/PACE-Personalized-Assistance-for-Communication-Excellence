@@ -15,30 +15,42 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
 import { useAppDispatch } from "@/hooks"
 
 import { loginUser } from "@/Features/auth/authThunks"
+import { useSelector } from "react-redux"
+import type { AuthState } from "@/Features/auth/authTypes"
+import { Link, useNavigate } from "react-router-dom"
+
 
 export function LoginForm({
   className,
-  ...props
+  ...props  
 }: React.ComponentProps<"div">) {
-  const [email,setEmail] = useState('')
-  const [password,setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const dispatch = useAppDispatch()
+  const navigate =useNavigate()
 
-  function handleLoginSubmit(e){
-    console.log("working");
-    
+  const { user,loading } = useSelector((state:{auth:AuthState}) => state.auth)
+
+  function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-
-    dispatch(loginUser({email,password}))
-
-    
+    dispatch(loginUser({ email, password }))
   }
+
+  useEffect(()=>{
+    if(user){
+      if(user.role === 'seniorCordinator'){
+        navigate("/admin")
+      }else if(user.role === 'student'){
+        navigate("/student")
+      }
+    }
+  },[user,navigate])
 
 
 
@@ -75,15 +87,18 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" name="password" onChange={(e)=>setPassword(e.target.value)} type="password" required />
+                <Input id="password" name="password" onChange={(e) => setPassword(e.target.value)} type="password" required />
               </Field>
               <Field>
-                <Button  type="submit">Login</Button>
+                <Button type="submit" disabled={loading}> 
+                  {loading ? "Logging in..." : "Login"}
+                </Button>
                 <Button variant="outline" type="button">
                   Login with Google
                 </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
+                  
+                  Don&apos;t have an account?<Link to="/signup">Sign up</Link> 
                 </FieldDescription>
               </Field>
             </FieldGroup>
