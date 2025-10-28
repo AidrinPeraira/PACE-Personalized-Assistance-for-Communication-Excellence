@@ -6,4 +6,5 @@ export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\
 
 export const batchRegex = /^[a-zA-Z]{3}\d{3}$/;
 
-      
+// Only letters, numbers, spaces, and basic punctuation
+export const charNumberRegex = /^[a-zA-Z0-9\s.,!?'-]+$/;

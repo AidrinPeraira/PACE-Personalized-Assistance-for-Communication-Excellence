@@ -1,10 +1,18 @@
+import { validateMongoId } from "../helpers/validateMongoId.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Task from "../models/taskModel.js";
 import { HTTP_STATUS } from "../utils/httpStatus.js";
+import { charNumberRegex } from "../validators/validators.js";
 
 export const addTask = asyncHandler(async (req, res) => {
-  const { activity, description, conductedBy } = req.body;
+  let { activity, description, conductedBy } = req.body;
   const assignedBy = req.user.id;
+
+  if (!validateMongoId(assignedBy)) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Invalid assignedBy ID" });
+  }
 
   if (!activity) {
     return res
@@ -27,6 +35,28 @@ export const addTask = asyncHandler(async (req, res) => {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
       .json({ message: "Conducted By is required" });
+  } else if (conductedBy.length > 0) {
+    for (let i = 0; i < conductedBy.length; i++) {
+      if (!validateMongoId(conductedBy[i])) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ message: "Invalid conductedBy ID" });
+      }
+    }
+  }
+
+  activity = activity.trim();
+  description = description.trim();
+
+  if (!charNumberRegex.test(activity)) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Invalid Activity" });
+  }
+  if (!charNumberRegex.test(description)) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Invalid Description" });
   }
 
   const newTask = {
@@ -72,9 +102,14 @@ export const getAllTasks = asyncHandler(async (req, res) => {
 
 export const updateTask = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
-  const { activity, description, conductedBy } = req.body;
+  let { activity, description, conductedBy } = req.body;
   const assignedBy = req.user.id;
 
+  if (!validateMongoId(assignedBy)) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Invalid assignedBy ID" });
+  }
   if (!activity) {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
@@ -96,6 +131,28 @@ export const updateTask = asyncHandler(async (req, res) => {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
       .json({ message: "Conducted By is required" });
+  } else if (conductedBy.length > 0) {
+    for (let i = 0; i < conductedBy.length; i++) {
+      if (!validateMongoId(conductedBy[i])) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ message: "Invalid conductedBy ID" });
+      }
+    }
+  }
+
+  activity = activity.trim();
+  description = description.trim();
+
+  if (!charNumberRegex.test(activity)) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Invalid Activity" });
+  }
+  if (!charNumberRegex.test(description)) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Invalid Description" });
   }
 
   const newData = {
