@@ -3,7 +3,7 @@ import Task from "../models/taskModel.js";
 import { HTTP_STATUS } from "../utils/httpStatus.js";
 
 export const addTask = asyncHandler(async (req, res) => {
-  const { activity, description } = req.body;
+  const { activity, description, conductedBy } = req.body;
   const assignedBy = req.user.id;
 
   if (!activity) {
@@ -17,10 +17,23 @@ export const addTask = asyncHandler(async (req, res) => {
       .json({ message: "Description is required" });
   }
 
+  if (!conductedBy) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Conducted By is required" });
+  }
+
+  if (conductedBy.length === 0) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Conducted By is required" });
+  }
+
   const newTask = {
     activity,
     description,
     assignedBy,
+    conductedBy,
   };
 
   const task = await Task.create(newTask);
@@ -59,7 +72,7 @@ export const getAllTasks = asyncHandler(async (req, res) => {
 
 export const updateTask = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
-  const { activity, description } = req.body;
+  const { activity, description, conductedBy } = req.body;
   const assignedBy = req.user.id;
 
   if (!activity) {
@@ -73,10 +86,23 @@ export const updateTask = asyncHandler(async (req, res) => {
       .json({ message: "Description is required" });
   }
 
+  if (!conductedBy) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Conducted By is required" });
+  }
+
+  if (conductedBy.length === 0) {
+    return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ message: "Conducted By is required" });
+  }
+
   const newData = {
     activity,
     description,
     assignedBy,
+    conductedBy,
   };
 
   const task = await Task.findByIdAndUpdate(taskId, newData, {

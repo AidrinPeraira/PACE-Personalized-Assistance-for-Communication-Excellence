@@ -40,7 +40,7 @@ const userRegister = asyncHandler(async (req, res) => {
     });
 
     await newUser.save();
-''
+
     res.status(HTTP_STATUS.CREATED).json({user : {
         username : newUser.username,
         email :newUser.email,
