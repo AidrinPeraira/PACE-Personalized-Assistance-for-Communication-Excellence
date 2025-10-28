@@ -27,8 +27,8 @@ router.post(
   checkAdminRole,
   toggleApproval
 );
-router.post(
-  "/student/students/nonapproved",
+router.get(
+  "/student/nonapproved",
   authenticate,
   checkAdminRole,
   allNonApprovedStudents
