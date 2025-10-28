@@ -163,11 +163,16 @@ const userLogout = asyncHandler(async (req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: "Logout Successful" })
 })
 
+const checkUser = asyncHandler(async(req,res) =>{
+    res.status(HTTP_STATUS.OK).json({user: req.user})
+})
+
 export {
     userLogin,
     userRegister,
     refreshAccessToken,
-    userLogout
+    userLogout,
+    checkUser
 }
 
 

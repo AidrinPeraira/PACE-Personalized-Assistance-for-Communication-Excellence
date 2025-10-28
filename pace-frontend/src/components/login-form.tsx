@@ -35,7 +35,7 @@ export function LoginForm({
   const dispatch = useAppDispatch()
   const navigate =useNavigate()
 
-  const { user,loading } = useSelector((state:{auth:AuthState}) => state.auth)
+  const { user } = useSelector((state:{auth:AuthState}) => state.auth)
 
   function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -90,8 +90,8 @@ export function LoginForm({
                 <Input id="password" name="password" onChange={(e) => setPassword(e.target.value)} type="password" required />
               </Field>
               <Field>
-                <Button type="submit" disabled={loading}> 
-                  {loading ? "Logging in..." : "Login"}
+                <Button type="submit">
+                  Login
                 </Button>
                 <Button variant="outline" type="button">
                   Login with Google
