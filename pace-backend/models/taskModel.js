@@ -17,6 +17,13 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    conductedBy:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      }
+    ]
   },
   { timestamps: true }
 );
