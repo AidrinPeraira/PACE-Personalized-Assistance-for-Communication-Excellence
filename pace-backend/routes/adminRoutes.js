@@ -7,6 +7,10 @@ import {
   getTask,
   updateTask,
 } from "../controller/taskController.js";
+import {
+  allNonApprovedStudents,
+  toggleApproval,
+} from "../controller/studentController.js";
 const router = express.Router();
 
 //Task management
@@ -15,6 +19,20 @@ router.get("/task/:taskId", authenticate, checkAdminRole, getTask);
 router.post("/task/add", authenticate, checkAdminRole, addTask);
 router.patch("/task/update/:taskId", authenticate, checkAdminRole, updateTask);
 router.delete("/task/delete/:taskId", authenticate, checkAdminRole, deleteTask);
+
+//Student Management
+router.post(
+  "/student/approve/toggle/:studentId",
+  authenticate,
+  checkAdminRole,
+  toggleApproval
+);
+router.post(
+  "/student/students/nonapproved",
+  authenticate,
+  checkAdminRole,
+  allNonApprovedStudents
+);
 
 //sample route
 router.get("/dash", authenticate, checkAdminRole, (req, res) => {
