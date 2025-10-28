@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { LoginPayload, RegisterPayload} from "./authTypes";
-import { login, register } from "@/api/authService";
+import { login, register, logout } from "@/api/authService";
 
 
 export const loginUser = createAsyncThunk(
@@ -19,3 +19,11 @@ export const registerUser = createAsyncThunk(
         return response.data
     }
 )
+
+export const logoutUser = createAsyncThunk(
+    'auth/logoutUser',
+    async () => {
+        const response = await logout(); // Call the API
+        return response.data;
+    }
+);

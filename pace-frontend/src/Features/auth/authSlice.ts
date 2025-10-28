@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from './authThunks'
+import { loginUser, registerUser, logoutUser } from './authThunks'
 import type { AuthState } from "./authTypes";
 
 const initialState: AuthState = {
     user: null,
-    token: null,
     loading: false,
     error: null
 }
@@ -13,11 +12,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        logout: (state) => {
-            state.user = null
-            state.token = null
-            localStorage.removeItem('token')
-        },
+
     },
     extraReducers: (builder) => {
         builder
@@ -29,8 +24,6 @@ const authSlice = createSlice({
         .addCase(loginUser.fulfilled,(state,action)=>{
             state.loading = false
             state.user = action.payload.user
-            state.token = action.payload.token
-            localStorage.setItem('token',action.payload.token)
         })
         .addCase(loginUser.rejected,(state,action)=>{
             state.loading = false
@@ -49,9 +42,21 @@ const authSlice = createSlice({
             state.loading = false
             state.error = action.error.message||'Signup Failed'
         })
+        .addCase(logoutUser.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
+                state.loading = false;
+                state.user = null; // Clear the user
+                state.error = null;
+            })
+            .addCase(logoutUser.rejected, (state) => {
+                state.loading = false;
+                // Even if logout fails, log the user out on the client
+                state.user = null; 
+            })
     },
 })
 
 
-export const {logout} = authSlice.actions
 export default authSlice.reducer

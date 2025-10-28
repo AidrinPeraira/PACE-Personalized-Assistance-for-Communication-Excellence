@@ -47,7 +47,8 @@ const userRegister = asyncHandler(async (req, res) => {
         batch : newUser.batch,
         role : newUser.role
 
-    }, message: "Registeration Success wait for the Approval" });
+        }, message: "Registeration Success wait for the Approval"
+    });
 
 });
 
@@ -99,7 +100,15 @@ const userLogin = asyncHandler(async (req, res) => {
         path: process.env.REFRESH_TOKEN_COOKIE_PATH
     })
 
-    res.status(HTTP_STATUS.OK).json({ message: "Login success" })
+    res.status(HTTP_STATUS.OK).json({
+        user: {
+            id: user._id,
+            name: user.username,
+            email: user.email,
+            role: user.role
+        },
+        message: "Login success"
+    })
 
 });
 
