@@ -1,6 +1,7 @@
 import express from 'express';
-import { userLogin, userRegister, refreshAccessToken ,userLogout} from '../controller/userController.js'
+import { userLogin, userRegister, refreshAccessToken ,userLogout, checkUser} from '../controller/userController.js'
 import { authenticate } from '../middlewares/authMiddleware.js';
+
 
 const router = express.Router();
 
@@ -10,10 +11,8 @@ router.post('/login', userLogin);
 router.post('/refresh-token', refreshAccessToken)
 router.post('/logout',userLogout)
 
-
-router.get('/protected', authenticate, (req, res) => {
-    res.json('Success')
-})
+// Frontend state manage
+router.get('/status', authenticate,checkUser)
 
 
 
