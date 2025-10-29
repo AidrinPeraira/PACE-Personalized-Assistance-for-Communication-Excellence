@@ -6,9 +6,13 @@ export function AppSidebar() {
   const location = useLocation();
 
   const links = [
-    { name: "Home", path: "/admin/home", icon: <Home size={18} /> },
-    { name: "Daily Task", path: "/daily-task", icon: <CalendarDays size={18} /> },
-    { name: "Students", path: "/students", icon: <Users size={18} /> },
+    { name: "Home", path: "/admin", icon: <Home size={18} /> },
+    {
+      name: "Daily Task",
+      path: "/admin/daily-task",
+      icon: <CalendarDays size={18} />,
+    },
+    { name: "Students", path: "/admin/students", icon: <Users size={18} /> },
   ];
 
   return (
