@@ -19,6 +19,7 @@ import {
   getFeedback,
   updateFeedback,
 } from "../controller/feedbackController.js";
+import { toogleAttendanceStatus } from "../controller/attendanceController.js";
 const router = express.Router();
 
 //Task management
@@ -58,6 +59,14 @@ router.delete(
   authenticate,
   checkAdminRole,
   deleteFeedback
+);
+
+//Attendance route
+router.post(
+  "/attendance/toggle",
+  authenticate,
+  checkAdminRole,
+  toogleAttendanceStatus
 );
 
 //sample route
