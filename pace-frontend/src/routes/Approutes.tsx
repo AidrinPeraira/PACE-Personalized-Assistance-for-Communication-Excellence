@@ -16,6 +16,7 @@ import {
 import AdminRoutes from "./Admin/AdminRoutes";
 import UserRoutes from "./User/UserRoutes";
 import { setAuthStatus } from "@/Features/auth/authSlice";
+import Loader from "@/components/Loader";
 
 const AppRoutes: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ const AppRoutes: React.FC = () => {
   if (status === "idle" || status === "loading") {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <div>Loading application...</div>
+        <Loader />
       </div>
     );
   }
