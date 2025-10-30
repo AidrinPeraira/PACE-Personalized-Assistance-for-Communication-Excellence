@@ -11,6 +11,14 @@ import {
   allNonApprovedStudents,
   toggleApproval,
 } from "../controller/studentController.js";
+import {
+  addFeedback,
+  deleteFeedback,
+  getAllFeedbacks,
+  getByTimeFrame,
+  getFeedback,
+  updateFeedback,
+} from "../controller/feedbackController.js";
 const router = express.Router();
 
 //Task management
@@ -27,11 +35,29 @@ router.post(
   checkAdminRole,
   toggleApproval
 );
-router.post(
-  "/student/students/nonapproved",
+router.get(
+  "/student/nonapproved",
   authenticate,
   checkAdminRole,
   allNonApprovedStudents
+);
+
+//Feedback management
+router.post("/feedback/add", authenticate, checkAdminRole, addFeedback);
+router.patch(
+  "/feedback/update/:feedbackId",
+  authenticate,
+  checkAdminRole,
+  updateFeedback
+);
+router.get("/feedback/all", authenticate, checkAdminRole, getAllFeedbacks);
+router.get("/feedback/timeframe", authenticate, checkAdminRole, getByTimeFrame);
+router.get("/feedback/:feedbackId", authenticate, checkAdminRole, getFeedback);
+router.delete(
+  "/feedback/delete/:feedbackId",
+  authenticate,
+  checkAdminRole,
+  deleteFeedback
 );
 
 //sample route
