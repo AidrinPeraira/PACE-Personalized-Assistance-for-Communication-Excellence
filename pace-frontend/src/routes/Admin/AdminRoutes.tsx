@@ -1,5 +1,7 @@
 import AdminLayout from "@/layout/AdminLayout";
 import AdminDash from "@/pages/AdminPages/AdminDash";
+import AdminStudents from "@/pages/AdminPages/AdminStudents";
+import AdminTasks from "@/pages/AdminPages/AdminTasks";
 import { Route, Routes } from "react-router-dom";
 
 const AdminRoutes = () => {
@@ -7,8 +9,8 @@ const AdminRoutes = () => {
     <Routes>
       <Route path="/" element={<AdminLayout />}>
         <Route path="/" element={<AdminDash />} />
-        <Route path="/daily-task" element={<AdminDash />} />
-        <Route path="/students" element={<AdminDash />} />
+        <Route path="/tasks" element={<AdminTasks />} />
+        <Route path="/students" element={<AdminStudents />} />
       </Route>
     </Routes>
   );

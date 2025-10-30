@@ -1,42 +1,58 @@
-import { Link, useLocation } from "react-router-dom";
-import { Home, CalendarDays, Users } from "lucide-react";
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
+import * as React from "react";
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { IconBook, type Icon } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
-export function AppSidebar() {
-  const location = useLocation();
+type SideNavData = {
+  data: {
+    user: {
+      name: string | null;
+      email: string | null;
+      avatar: string | null;
+    };
+    navMain: {
+      title: string;
+      url: string;
+      icon: Icon | undefined;
+    }[];
+  };
+};
+type prop = React.ComponentProps<typeof Sidebar> & SideNavData;
 
-  const links = [
-    { name: "Home", path: "/admin", icon: <Home size={18} /> },
-    {
-      name: "Daily Task",
-      path: "/admin/daily-task",
-      icon: <CalendarDays size={18} />,
-    },
-    { name: "Students", path: "/admin/students", icon: <Users size={18} /> },
-  ];
-
+export function AppSidebar({ data, ...props }: prop) {
   return (
-    <Sidebar>
-      <SidebarContent className="p-4">
-        <ul className="flex flex-col gap-2">
-          {links.map((link) => (
-            <li key={link.path}>
-              <Link
-                to={link.path}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all
-                  ${
-                    location.pathname === link.path
-                      ? "bg-primary text-white"
-                      : "text-muted-foreground hover:bg-muted"
-                  }`}
-              >
-                {link.icon}
-                {link.name}
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <Link to="#">
+                <IconBook className="!size-5" />
+                <span className="text-base font-semibold">PACE</span>
               </Link>
-            </li>
-          ))}
-        </ul>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

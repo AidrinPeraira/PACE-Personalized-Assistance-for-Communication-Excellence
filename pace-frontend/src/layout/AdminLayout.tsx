@@ -1,33 +1,58 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+
 import { Outlet } from "react-router-dom";
+import {
+  IconChartBar,
+  IconDashboard,
+  IconListDetails,
+} from "@tabler/icons-react";
+import { useSelector } from "react-redux";
+import type { AuthState } from "@/Features/auth/authTypes";
 
-const AdminLayout = () => {
+export default function AdminLayout() {
+  let { user } = useSelector((state: { auth: AuthState }) => state.auth);
+
+  const data = {
+    user: {
+      name: user?.name,
+      email: user?.email,
+      avatar: "/avatars/shadcn.jpg",
+    },
+    navMain: [
+      {
+        title: "Dashboard",
+        url: "/admin",
+        icon: IconDashboard,
+      },
+      {
+        title: "Tasks",
+        url: "/admin/tasks",
+        icon: IconListDetails,
+      },
+      {
+        title: "Students",
+        url: "/admin/students",
+        icon: IconChartBar,
+      },
+    ],
+  };
+
   return (
-    <>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          {/* Header Section */}
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-            <div className="flex items-center gap-2 px-3">
-              <SidebarTrigger />
-            </div>
-          </header>
-
-          {/* Content Section */}
-          <div className="flex flex-1 flex-col gap-4 p-4">
-            {/* Child routes will appear here */}
-            <Outlet />
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-    </>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar data={data} variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <Outlet />
+      </SidebarInset>
+    </SidebarProvider>
   );
-};
-
-export default AdminLayout;
+}
