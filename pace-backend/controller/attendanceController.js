@@ -38,17 +38,15 @@ export const toogleAttendanceStatus = asyncHandler(async (req, res) => {
       .json({ message: "Invalid markedBy ID" });
   }
 
-  const existingAttendance = await Attendance.findOne({
+  const existingAttendance = await Attendance.findOneAndDelete({
     studentId,
     taskId,
     markedBy,
   });
   if (existingAttendance) {
-    existingAttendance.status = !existingAttendance.status;
-    await existingAttendance.save();
     return res
       .status(HTTP_STATUS.OK)
-      .json({ message: "Attendance toggled", attendance: existingAttendance });
+      .json({ message: "Attendance deleted", attendance: existingAttendance });
   }
 
   const attendance = await Attendance.create({
