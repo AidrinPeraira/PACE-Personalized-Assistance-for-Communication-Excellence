@@ -1,4 +1,3 @@
-import { register } from "@/api/authService";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { registerUser } from "@/Features/auth/authThunks";
 import { useAppDispatch } from "@/hooks";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [name, setName] = useState("");
@@ -25,7 +25,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [batch, setBatch] = useState("");
   const dispatch = useAppDispatch();
 
-  async function handleRegisterSubmit(e) {
+  async function handleRegisterSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     console.log(name);
     console.log(email);
@@ -36,7 +36,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         username: name,
         email: email,
         password: password,
-        batch : batch
+        batch: batch
       })
     );
   }
@@ -107,7 +107,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <Button type="submit">Create Account</Button>
 
                 <FieldDescription className="px-6 text-center">
-                  Already have an account? <a href="#">Sign in</a>
+                  Already have an account? <Link to="/login">Login </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

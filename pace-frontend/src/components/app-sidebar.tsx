@@ -1,5 +1,3 @@
-// src/components/app-sidebar.tsx
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, CalendarDays, Users } from "lucide-react";
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar";

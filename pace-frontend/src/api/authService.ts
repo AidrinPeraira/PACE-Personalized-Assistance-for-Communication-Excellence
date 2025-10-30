@@ -12,3 +12,8 @@ export const register = (data: RegisterPayload) =>
 
 export const logout = () =>
     axios.post(`${API}/user/logout`, {}, { withCredentials: true });
+
+
+export const checkAuthStatus = () => {
+    return axios.get(`${API}/user/status`,{withCredentials: true});
+}
