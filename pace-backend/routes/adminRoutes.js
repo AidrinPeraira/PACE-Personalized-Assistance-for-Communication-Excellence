@@ -50,9 +50,9 @@ router.patch(
   checkAdminRole,
   updateFeedback
 );
-router.get("/feedback/:taskId", authenticate, checkAdminRole, getFeedback);
 router.get("/feedback/all", authenticate, checkAdminRole, getAllFeedbacks);
 router.get("/feedback/timeframe", authenticate, checkAdminRole, getByTimeFrame);
+router.get("/feedback/:feedbackId", authenticate, checkAdminRole, getFeedback);
 router.delete(
   "/feedback/delete/:feedbackId",
   authenticate,

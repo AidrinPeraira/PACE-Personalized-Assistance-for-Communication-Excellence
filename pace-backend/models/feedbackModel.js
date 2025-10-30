@@ -23,6 +23,7 @@ const feedbackSchema = new mongoose.Schema(
     },
     progress: {
       type: Number,
+      default: 0,
       required: true,
       min: 0,
       max: 10,

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { validateMongoId } from "../helpers/validateMongoId.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import { Feedback } from "../models/feedbackModel.js";
@@ -35,6 +36,7 @@ export const addFeedback = asyncHandler(async (req, res) => {
     });
   }
 
+  //check weather feedback already given
   const isExist = await Feedback.findOne({ studentId, taskId });
 
   if (isExist) {
@@ -64,6 +66,9 @@ export const addFeedback = asyncHandler(async (req, res) => {
 
 export const updateFeedback = asyncHandler(async (req, res) => {
   const { feedbackId } = req.params;
+  let givenBy = req.user.id;
+  givenBy = new mongoose.Types.ObjectId(givenBy);
+
   if (!feedbackId) {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
@@ -75,7 +80,7 @@ export const updateFeedback = asyncHandler(async (req, res) => {
       .json({ message: "Invalid feedbackId" });
   }
 
-  const { feedback } = req.body;
+  let { feedback } = req.body;
   if (!feedback) {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
@@ -88,6 +93,19 @@ export const updateFeedback = asyncHandler(async (req, res) => {
       message:
         "Feedback should only contain letters, numbers, spaces, and basic punctuation",
     });
+  }
+
+  //Validate if the admin can modify the feedback
+  const valicateGivenBy = await Feedback.findOne({ _id: feedbackId });
+  if (!valicateGivenBy) {
+    return res
+      .status(HTTP_STATUS.NOT_FOUND)
+      .json({ message: "Feedback not found" });
+  }
+  if (!valicateGivenBy.givenBy.equals(givenBy)) {
+    return res
+      .status(HTTP_STATUS.UNAUTHORIZED)
+      .json({ message: "You can't update this feedback" });
   }
 
   const updatedFeedback = await Feedback.findByIdAndUpdate(
@@ -107,18 +125,18 @@ export const updateFeedback = asyncHandler(async (req, res) => {
 });
 
 export const getFeedback = asyncHandler(async (req, res) => {
-  const { taskId } = req.params;
-  if (!taskId) {
+  const { feedbackId } = req.params;
+  if (!feedbackId) {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
       .json({ message: "Task ID is required" });
   }
-  if (!validateMongoId(taskId)) {
+  if (!validateMongoId(feedbackId)) {
     return res
       .status(HTTP_STATUS.BAD_REQUEST)
-      .json({ message: "Invalid taskId" });
+      .json({ message: "Invalid feedbackId" });
   }
-  const feedback = await Feedback.find({ taskId });
+  const feedback = await Feedback.findOne({ _id: feedbackId });
   if (!feedback) {
     return res
       .status(HTTP_STATUS.NOT_FOUND)
