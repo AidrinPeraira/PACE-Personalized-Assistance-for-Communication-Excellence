@@ -44,15 +44,16 @@ export function ViewTaskModal({
       setAttendance(task.attendance || []);
       setEditedActivity(task.activity);
       setEditedDescription(task.description);
-      setEditedConductedBy(task.conductedBy || []);
-    } else {
+      setEditedConductedBy(task.conductedBy?.map((c: any) => typeof c === 'object' ? c._id : c) || []); // Handle populated/unpopulated
+    } else if(!open){
+      
       setAttendance([]);
       setIsEditing(false);
       setEditedActivity("");
       setEditedDescription("");
       setEditedConductedBy([]);
     }
-  }, [task]);
+  }, [task, open]); 
 
   if (!task) return null;
 
@@ -76,17 +77,13 @@ export function ViewTaskModal({
     if (!task) return;
     setEditedActivity(task.activity);
     setEditedDescription(task.description);
-    setEditedConductedBy(task.conductedBy || []);
+    const conductedByIds = task.conductedBy?.map((c: any) => typeof c === 'object' ? c._id : c) || [];
+    setEditedConductedBy(conductedByIds);
     setIsEditing(true);
   };
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    if (task) {
-      setEditedActivity(task.activity);
-      setEditedDescription(task.description);
-      setEditedConductedBy(task.conductedBy || []);
-    }
   };
 
   const handleSaveAttendance = async () => {
@@ -94,7 +91,7 @@ export function ViewTaskModal({
     try {
       await markAttendanceApi(task._id, { attendance });
       onTaskUpdated();
-      onOpenChange(false);
+      onOpenChange(false); 
     } catch (error) {
       console.error("Failed to save attendance:", error);
     }
@@ -109,8 +106,8 @@ export function ViewTaskModal({
     };
     try {
       await updateTaskApi(task._id, updatedData);
-      onTaskUpdated();
-      setIsEditing(false);
+      onTaskUpdated(); 
+      setIsEditing(false); 
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to update task:", error);
@@ -124,7 +121,7 @@ export function ViewTaskModal({
     try {
       await deleteTaskApi(task._id);
       onTaskUpdated();
-      onOpenChange(false);
+      onOpenChange(false); 
     } catch (error) {
       console.error("Failed to delete task:", error);
     }
@@ -171,7 +168,6 @@ export function ViewTaskModal({
           </div>
 
           <hr />
-
           {isEditing && (
             <div>
               <h4 className="font-medium mb-2">Conducted By</h4>
@@ -182,7 +178,9 @@ export function ViewTaskModal({
                       <Checkbox
                         id={`cond-${user._id}`}
                         checked={editedConductedBy.includes(user._id)}
-                        onCheckedChange={() => handleConductedByChange(user._id)}
+                        onCheckedChange={() =>
+                          handleConductedByChange(user._id)
+                        }
                       />
                       <label
                         htmlFor={`cond-${user._id}`}
@@ -207,14 +205,14 @@ export function ViewTaskModal({
               <div className="max-h-[200px] overflow-y-auto rounded-md border p-3 flex flex-col gap-3">
                 {allUsers.length > 0 ? (
                   allUsers.map((user) => (
-                    <div key={user.id} className="flex items-center gap-2">
+                    <div key={user._id} className="flex items-center gap-2">
                       <Checkbox
-                        id={`att-${user.id}`}
-                        checked={attendance.includes(user.id)}
-                        onCheckedChange={() => handleAttendanceChange(user.id)}
+                        id={`att-${user._id}`}
+                        checked={attendance.includes(user._id)}
+                        onCheckedChange={() => handleAttendanceChange(user._id)}
                       />
                       <label
-                        htmlFor={`att-${user.id}`}
+                        htmlFor={`att-${user._id}`}
                         className="text-sm font-medium"
                       >
                         {user.username}
@@ -230,7 +228,6 @@ export function ViewTaskModal({
             </div>
           )}
         </div>
-
         <DialogFooter className="mt-4 flex flex-col sm:flex-row sm:justify-between gap-2">
           {isEditing ? (
             <>

@@ -1,4 +1,9 @@
-import { addTaskApi, getAllStudentApi, getAllTaskApi, getSeniorsApi } from "@/api/taskApi";
+import {
+  addTaskApi,
+  getAllStudentApi,
+  getAllTaskApi,
+  getSeniorsApi,
+} from "@/api/taskApi";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,8 +33,8 @@ function AdminTasks() {
   const [description, setDescription] = useState("");
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
-  const [students,setStudents] = useState<any[]>([]);
-  let count = 0;
+  const [students, setStudents] = useState<any[]>([]);
+  // let count = 0; // <-- Removed this, as it's a render-side side-effect
 
   const [seniors, setSeniors] = useState<any[]>([]);
   const [conductedBy, setConductedBy] = useState<string[]>([]);
@@ -54,7 +59,7 @@ function AdminTasks() {
     } catch (error) {
       console.log("failed to fetch tasks", error);
     }
-  }
+  };
 
   const fetchStudents = async () => {
     try {
@@ -65,23 +70,19 @@ function AdminTasks() {
     } catch (error) {
       console.log("failed to fetch students", error);
     }
-  }
-
-
+  };
 
   useEffect(() => {
     fetchSeniors();
     fetchTask();
     fetchStudents();
   }, []);
-  console.log("senior", seniors);
-  console.log("tsak", tasks)
-  console.log("students",students)
 
   const handleViewClick = (task: any) => {
     setSelectedTask(task);
     setIsViewModalOpen(true);
   };
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = {
@@ -97,6 +98,7 @@ function AdminTasks() {
         setTaskName("");
         setDescription("");
         setConductedBy([]);
+        fetchTask(); 
       })
       .catch((error) => {
         console.error("Failed to add task:", error);
@@ -112,18 +114,29 @@ function AdminTasks() {
       }
     });
   };
+
   return (
     <>
-      <div className="flex items-center justify-between w-full px-4">
-        <div className="flex items-center gap-2 m-4">
-          <Input type="text" placeholder="Search..." className="w-64" />
-          <Button type="submit" className="flex items-center gap-1">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full p-4 gap-4">
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Input
+            type="text"
+            placeholder="Search..."
+            className="w-full sm:w-64"
+          />
+          <Button type="submit" variant="outline" size="icon" className="sm:hidden">
+            <Search className="h-4 w-4" /> 
+          </Button>
+          <Button type="submit" variant="outline" className="hidden sm:flex items-center gap-1">
             <Search className="h-4 w-4" />
             Search
           </Button>
         </div>
-
-        <Button onClick={() => setOpen(true)} className="flex items-center gap-2">
+        <Button
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-2 w-full sm:w-auto" 
+        >
           <Plus className="h-4 w-4" />
           Add Task
         </Button>
@@ -181,52 +194,95 @@ function AdminTasks() {
               </div>
             </div>
 
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Close
+            <div className="flex gap-2"> 
+              <DialogClose asChild>
+                <Button type="button" variant="outline" className="w-full">
+                  Close
+                </Button>
+              </DialogClose>
+              <Button type="submit" className="w-full">
+                Save Task
               </Button>
-            </DialogClose>
-            <Button type="submit" className="w-full">
-              Save Task
-            </Button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Task ID</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Task</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {tasks.map((task) => (
-            <TableRow key={task.id}>
-              <TableCell className="font-medium">{++count}</TableCell>
-              <TableCell>{new Date(task.createdAt).toLocaleDateString()}</TableCell>
-              <TableCell>{task.activity}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                 variant="secondary"
-                 onClick={() => handleViewClick(task)}
-                 >
-                  <Eye className="w-4 h-4" />
-                  View
-                </Button>
-              </TableCell>
+      <div className="hidden md:block p-4">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Task ID</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Task</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {tasks.map((task, index) => (
+              <TableRow key={task._id}> 
+                <TableCell className="font-medium">{index + 1}</TableCell> 
+                <TableCell>
+                  {new Date(task.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{task.activity}</TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleViewClick(task)}
+                    className="flex items-center gap-1 ml-auto" 
+                  >
+                    <Eye className="w-4 h-4" />
+                    View
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="block md:hidden p-4 space-y-3">
+        {tasks.map((task, index) => (
+          <div
+            key={task._id}
+            className="border rounded-lg p-4 shadow-sm bg-card text-card-foreground"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <span className="font-semibold text-base pr-2">
+                {task.activity}
+              </span>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handleViewClick(task)}
+                className="flex-shrink-0 flex items-center gap-1"
+              >
+                <Eye className="w-4 h-4" />
+                View
+              </Button>
+            </div>
+
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>
+                <strong className="text-card-foreground">Task ID:</strong>{" "}
+                {index + 1} 
+              </p>
+              <p>
+                <strong className="text-card-foreground">Date:</strong>{" "}
+                {new Date(task.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <ViewTaskModal
         open={isViewModalOpen}
         onOpenChange={setIsViewModalOpen}
         task={selectedTask}
         seniors={seniors}
-        allUsers={students} 
+        allUsers={students}
         onTaskUpdated={fetchTask}
       />
     </>
