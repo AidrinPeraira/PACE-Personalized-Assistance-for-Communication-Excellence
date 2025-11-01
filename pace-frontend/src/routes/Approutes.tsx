@@ -5,7 +5,6 @@ import type { AuthState } from "@/Features/auth/authTypes";
 import { checkAuthStatusThunk } from "@/Features/auth/authThunks";
 import { useAppDispatch } from "@/hooks";
 
-import Home from "../pages/Home";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import {
