@@ -33,10 +33,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
     dispatch(
       registerUser({
-        username: name,
+        name: name,
         email: email,
         password: password,
-        batch: batch
+        batch: batch,
       })
     );
   }

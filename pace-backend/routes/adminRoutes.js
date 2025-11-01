@@ -20,6 +20,7 @@ import {
   updateFeedback,
 } from "../controller/feedbackController.js";
 import { toogleAttendanceStatus } from "../controller/attendanceController.js";
+import { getAllUsers } from "../controller/adminManagementController.js";
 const router = express.Router();
 
 //Task management
@@ -68,6 +69,9 @@ router.post(
   checkAdminRole,
   toogleAttendanceStatus
 );
+
+//Admin managemenet
+router.get("/users/all", authenticate, checkAdminRole, getAllUsers);
 
 //sample route
 router.get("/dash", authenticate, checkAdminRole, (req, res) => {

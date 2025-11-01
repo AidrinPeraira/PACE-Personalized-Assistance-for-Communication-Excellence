@@ -8,7 +8,7 @@ import { generateAccessToken, generateRefreshToken } from '../utils/tokenService
 
 
 const userRegister = asyncHandler(async (req, res) => {
-    const { username, email, password, batch } = req.body;
+    const { name : username, email, password, batch } = req.body;
     console.log(req.body)
 
     if (!usernameRegex.test(username)) {

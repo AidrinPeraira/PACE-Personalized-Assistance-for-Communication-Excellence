@@ -16,8 +16,8 @@ export default function AdminLayout() {
 
   const data = {
     user: {
-      name: user?.name,
-      email: user?.email,
+      name: user?.name || null,
+      email: user?.email || null,
       avatar: "/avatars/shadcn.jpg",
     },
     navMain: [
