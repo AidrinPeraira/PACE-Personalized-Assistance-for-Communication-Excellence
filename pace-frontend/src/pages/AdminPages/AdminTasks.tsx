@@ -1,33 +1,117 @@
-import { addTaskApi } from "@/api/taskApi";
+import { addTaskApi, getAllStudentApi, getAllTaskApi, getSeniorsApi } from "@/api/taskApi";
 import { Button } from "@/components/ui/button";
-import { DialogHeader } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@radix-ui/react-select";
-import { Eye, Plus, Search, Table } from "lucide-react";
-import React, { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, Plus, Search } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ViewTaskModal } from "@/components/viewTaskModal";
 
 function AdminTasks() {
   const [open, setOpen] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
-  function handleSubmit(e:React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = {
-      activity:taskName,
-      description,
-      conductedBy:"nandu"
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<any | null>(null);
+  const [students,setStudents] = useState<any[]>([]);
+  let count = 0;
+
+  const [seniors, setSeniors] = useState<any[]>([]);
+  const [conductedBy, setConductedBy] = useState<string[]>([]);
+
+  const [tasks, setTasks] = useState<any[]>([]);
+  const fetchSeniors = async () => {
+    try {
+      const response = await getSeniorsApi();
+      if (response.data && response.data.users) {
+        setSeniors(response.data.users);
+      }
+    } catch (error) {
+      console.error("failed to fetch users", error);
     }
-    addTaskApi(data)
+  };
+  const fetchTask = async () => {
+    try {
+      const response = await getAllTaskApi();
+      if (response.data && response.data.tasks) {
+        setTasks(response.data.tasks);
+      }
+    } catch (error) {
+      console.log("failed to fetch tasks", error);
+    }
   }
 
-  const invoices = [
-    { invoice: "INV001", paymentStatus: "Paid", totalAmount: "$250.00", paymentMethod: "Credit Card" },
-    { invoice: "INV002", paymentStatus: "Pending", totalAmount: "$150.00", paymentMethod: "PayPal" },
-    { invoice: "INV003", paymentStatus: "Unpaid", totalAmount: "$350.00", paymentMethod: "Bank Transfer" },
-  ]
+  const fetchStudents = async () => {
+    try {
+      const response = await getAllStudentApi();
+      if (response.data && response.data.users) {
+        setStudents(response.data.users);
+      }
+    } catch (error) {
+      console.log("failed to fetch students", error);
+    }
+  }
+
+
+
+  useEffect(() => {
+    fetchSeniors();
+    fetchTask();
+    fetchStudents();
+  }, []);
+  console.log("senior", seniors);
+  console.log("tsak", tasks)
+  console.log("students",students)
+
+  const handleViewClick = (task: any) => {
+    setSelectedTask(task);
+    setIsViewModalOpen(true);
+  };
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = {
+      activity: taskName,
+      description,
+      conductedBy: conductedBy,
+    };
+
+    addTaskApi(data)
+      .then((response) => {
+        console.log("Task added:", response.data);
+        setOpen(false);
+        setTaskName("");
+        setDescription("");
+        setConductedBy([]);
+      })
+      .catch((error) => {
+        console.error("Failed to add task:", error);
+      });
+  }
+
+  const handleUserSelect = (userId: string) => {
+    setConductedBy((prevSelectedUser) => {
+      if (prevSelectedUser.includes(userId)) {
+        return prevSelectedUser.filter((id) => id !== userId);
+      } else {
+        return [...prevSelectedUser, userId];
+      }
+    });
+  };
   return (
     <>
       <div className="flex items-center justify-between w-full px-4">
@@ -46,45 +130,63 @@ function AdminTasks() {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          className="sm:max-w-md  backdrop-blur-lg border border-gray-200 shadow-xl rounded-xl"
-        >
+        <DialogContent className="sm:max-w-md  backdrop-blur-lg border border-gray-200 shadow-xl rounded-xl">
           <DialogHeader className="flex justify-between items-center">
-            <DialogTitle className="text-lg font-semibold">Add New Task</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Add New Task
+            </DialogTitle>
           </DialogHeader>
 
           <form className="flex flex-col gap-4 mt-3" onSubmit={handleSubmit}>
-            <Input placeholder="Task Name" onChange={(e) => { setTaskName(e.target.value) }} />
+            <Input
+              placeholder="Task Name"
+              value={taskName}
+              onChange={(e) => {
+                setTaskName(e.target.value);
+              }}
+            />
             <Textarea
               placeholder="Description"
               className="min-h-[100px] "
-              onChange={(e) => {setDescription(e.target.value)}}
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
             />
 
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="ConductedBy" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>North America</SelectLabel>
-                  <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-                  <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-                  <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-                  <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-                  <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-                  <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium">Conducted By</label>
+              <div className="max-h-[200px] overflow-y-auto rounded-md border p-3">
+                {seniors.length > 0 ? (
+                  seniors.map((senior) => (
+                    <div key={senior._id} className="flex items-center gap-2 mb-2">
+                      <Checkbox
+                        id={senior._id}
+                        onCheckedChange={() => handleUserSelect(senior._id)}
+                        checked={conductedBy.includes(senior._id)}
+                      />
+                      <label
+                        htmlFor={senior._id}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {senior.username}
+                      </label>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Loading users...
+                  </p>
+                )}
+              </div>
+            </div>
 
             <DialogClose asChild>
-              <Button
-              >
+              <Button type="button" variant="outline">
                 Close
               </Button>
             </DialogClose>
-            <Button type="submit" className="w-full" onClick={() => setOpen(false)}>
+            <Button type="submit" className="w-full">
               Save Task
             </Button>
           </form>
@@ -101,15 +203,17 @@ function AdminTasks() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>Cordinators</TableCell>
-
+          {tasks.map((task) => (
+            <TableRow key={task.id}>
+              <TableCell className="font-medium">{++count}</TableCell>
+              <TableCell>{new Date(task.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell>{task.activity}</TableCell>
               <TableCell className="text-right">
-                <Button variant="secondary">
-                  <Eye className="w-4 h-4"/>
+                <Button
+                 variant="secondary"
+                 onClick={() => handleViewClick(task)}
+                 >
+                  <Eye className="w-4 h-4" />
                   View
                 </Button>
               </TableCell>
@@ -117,8 +221,16 @@ function AdminTasks() {
           ))}
         </TableBody>
       </Table>
+      <ViewTaskModal
+        open={isViewModalOpen}
+        onOpenChange={setIsViewModalOpen}
+        task={selectedTask}
+        seniors={seniors}
+        allUsers={students} 
+        onTaskUpdated={fetchTask}
+      />
     </>
-  )
+  );
 }
 
-export default AdminTasks
+export default AdminTasks;
