@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { registerUser } from "@/Features/auth/authThunks";
 import { useAppDispatch } from "@/hooks";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [name, setName] = useState("");
@@ -26,19 +26,18 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const dispatch = useAppDispatch();
 
   async function handleRegisterSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    console.log(name);
-    console.log(email);
-    console.log(password);
+    try {
+      e.preventDefault();
 
-    dispatch(
-      registerUser({
-        name: name,
-        email: email,
-        password: password,
-        batch: batch,
-      })
-    );
+      dispatch(
+        registerUser({
+          name: name,
+          email: email,
+          password: password,
+          batch: batch,
+        })
+      );
+    } catch (error) {}
   }
 
   return (

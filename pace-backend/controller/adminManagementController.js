@@ -3,7 +3,7 @@ import { HTTP_STATUS } from "../utils/httpStatus.js";
 import User from "../models/userModel.js";
 
 export const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({ isApproved: true, role: "student" });
+  const users = await User.find();
   if (!users) {
     return res
       .status(HTTP_STATUS.NOT_FOUND)
@@ -18,9 +18,8 @@ export const getAllUsers = asyncHandler(async (req, res) => {
   res.status(HTTP_STATUS.OK).json({ message: "users found", users });
 });
 
-
 export const getSenior = asyncHandler(async (req, res) => {
-  const users = await User.find({ role: 'seniorCordinator' });
+  const users = await User.find({ role: "seniorCordinator" });
   if (!users) {
     return res
       .status(HTTP_STATUS.NOT_FOUND)

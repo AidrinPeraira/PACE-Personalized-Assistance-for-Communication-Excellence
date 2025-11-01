@@ -98,7 +98,7 @@ function AdminTasks() {
         setTaskName("");
         setDescription("");
         setConductedBy([]);
-        fetchTask(); 
+        fetchTask();
       })
       .catch((error) => {
         console.error("Failed to add task:", error);
@@ -118,24 +118,32 @@ function AdminTasks() {
   return (
     <>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full p-4 gap-4">
-
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Input
             type="text"
             placeholder="Search..."
             className="w-full sm:w-64"
           />
-          <Button type="submit" variant="outline" size="icon" className="sm:hidden">
-            <Search className="h-4 w-4" /> 
+          <Button
+            type="submit"
+            variant="outline"
+            size="icon"
+            className="sm:hidden"
+          >
+            <Search className="h-4 w-4" />
           </Button>
-          <Button type="submit" variant="outline" className="hidden sm:flex items-center gap-1">
+          <Button
+            type="submit"
+            variant="outline"
+            className="hidden sm:flex items-center gap-1"
+          >
             <Search className="h-4 w-4" />
             Search
           </Button>
         </div>
         <Button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-2 w-full sm:w-auto" 
+          className="flex items-center gap-2 w-full sm:w-auto"
         >
           <Plus className="h-4 w-4" />
           Add Task
@@ -172,7 +180,10 @@ function AdminTasks() {
               <div className="max-h-[200px] overflow-y-auto rounded-md border p-3">
                 {seniors.length > 0 ? (
                   seniors.map((senior) => (
-                    <div key={senior._id} className="flex items-center gap-2 mb-2">
+                    <div
+                      key={senior._id}
+                      className="flex items-center gap-2 mb-2"
+                    >
                       <Checkbox
                         id={senior._id}
                         onCheckedChange={() => handleUserSelect(senior._id)}
@@ -194,7 +205,7 @@ function AdminTasks() {
               </div>
             </div>
 
-            <div className="flex gap-2"> 
+            <div className="flex flex-col gap-2">
               <DialogClose asChild>
                 <Button type="button" variant="outline" className="w-full">
                   Close
@@ -220,8 +231,8 @@ function AdminTasks() {
           </TableHeader>
           <TableBody>
             {tasks.map((task, index) => (
-              <TableRow key={task._id}> 
-                <TableCell className="font-medium">{index + 1}</TableCell> 
+              <TableRow key={task._id}>
+                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   {new Date(task.createdAt).toLocaleDateString()}
                 </TableCell>
@@ -230,7 +241,7 @@ function AdminTasks() {
                   <Button
                     variant="secondary"
                     onClick={() => handleViewClick(task)}
-                    className="flex items-center gap-1 ml-auto" 
+                    className="flex items-center gap-1 ml-auto"
                   >
                     <Eye className="w-4 h-4" />
                     View
@@ -266,7 +277,7 @@ function AdminTasks() {
             <div className="text-sm text-muted-foreground space-y-1">
               <p>
                 <strong className="text-card-foreground">Task ID:</strong>{" "}
-                {index + 1} 
+                {index + 1}
               </p>
               <p>
                 <strong className="text-card-foreground">Date:</strong>{" "}
