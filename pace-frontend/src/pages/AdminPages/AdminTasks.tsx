@@ -10,7 +10,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table"
-import { Plus, Search, X } from "lucide-react"
+import { Eye, Plus, Search, X } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { addTask } from "@/api/taskApi"
+import { addTaskApi } from "@/api/taskApi"
 function AdminTasks() {
   const [open, setOpen] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -41,7 +41,7 @@ function AdminTasks() {
       description,
       conductedBy:"nandu"
     }
-    const res = addTask(data)
+    addTaskApi(data)
   }
 
   const invoices = [
@@ -118,7 +118,6 @@ function AdminTasks() {
             <TableHead className="w-[100px]">Task ID</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Task</TableHead>
-            <TableHead>ConductedBy</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -127,22 +126,17 @@ function AdminTasks() {
             <TableRow key={invoice.invoice}>
               <TableCell className="font-medium">{invoice.invoice}</TableCell>
               <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
               <TableCell>Cordinators</TableCell>
 
               <TableCell className="text-right">
-                <Button className="mr-2">Edit</Button>
-                <Button variant="secondary">Delete</Button>
+                <Button variant="secondary">
+                  <Eye className="w-4 h-4"/>
+                  View
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          {/* <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow> */}
-        </TableFooter>
       </Table>
     </>
   )

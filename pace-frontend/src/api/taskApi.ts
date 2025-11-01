@@ -1,4 +1,4 @@
 import API from "./api";
 
 
-export const addTask = (data) =>API.post('/admin/task/add',data); 
+export const addTaskApi = (data) =>API.post('/admin/task/add',data); 
